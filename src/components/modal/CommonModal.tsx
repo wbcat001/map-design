@@ -24,7 +24,7 @@ export const CommonModal: FC<CommonModalProps> = ({
                 overlayClassName={styles.overlay}
             >
                 <button onClick={closeModal} className={styles.modalClose} type="button">
-                    閉じる
+                    ×
                 </button>
                 <div className="modal-content">{elem}</div>
             </Modal>
