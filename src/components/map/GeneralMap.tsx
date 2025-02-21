@@ -16,6 +16,8 @@ import {useMapEvents} from 'react-leaflet/hooks';
 import Detail from './Detail';
 
 
+
+
 const MapCompoent = () => {
     const map  = useMapEvents({
       click: () => {

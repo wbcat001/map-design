@@ -84,7 +84,7 @@ const UploadPage = () => {
       await new Promise((resolve) => setTimeout(resolve, 2000)); // 模擬的に2秒待つ
       const res = await fetch("/api/upload", {
         method: "POST",
-        body: new FormData(), // add location, title
+        body: new FormData(), // add location, title, session
       })
       router.push('/');
       // 
