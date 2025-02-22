@@ -7,8 +7,9 @@ type GeoLocationPosition = {
 
 export const useGeoLocation = (interval: number = 5000) => {
     const defaultLocation = {
-        latitude: 0,
-        longitude: 0
+        // tokyo
+        latitude: 35.6895,
+        longitude: 139.6917
     }
     const [location, setLocation] = useState< GeoLocationPosition>(defaultLocation);
 

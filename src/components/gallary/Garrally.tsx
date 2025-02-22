@@ -1,126 +1,66 @@
 "use client"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 // import { Heart } from "lucide-react";
 import FavoriteIcon from '@mui/icons-material/Favorite';
-type Image = {
-    id: string;
-    url: string;
-    latitude: number;
-    longitude: number;
-    user: {
-        id: string;
-        name: string;
-    }
-    favorite: number;
-}
-const images: Image[] = [
-    {
-      id: "1",
-      url: "https://images.unsplash.com/photo-1738430275589-2cd3d0d0d57a?q=80&w=861&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      latitude: 35.6895,
-      longitude: 139.6917,
-      user: { id: "u1", name: "Alice" },
-      favorite: 42,
-    },
-    {
-      id: "2",
-      url: "https://images.unsplash.com/photo-1734102505163-5050877fbf47?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      latitude: 37.7749,
-      longitude: -122.4194,
-      user: { id: "u2", name: "Bob" },
-      favorite: 76,
-    },
-    {
-      id: "1",
-      url: "https://images.unsplash.com/photo-1738430275589-2cd3d0d0d57a?q=80&w=861&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      latitude: 35.6895,
-      longitude: 139.6917,
-      user: { id: "u1", name: "Alice" },
-      favorite: 42,
-    },
-    {
-      id: "2",
-      url: "https://images.unsplash.com/photo-1734102505163-5050877fbf47?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      latitude: 37.7749,
-      longitude: -122.4194,
-      user: { id: "u2", name: "Bob" },
-      favorite: 76,
-    },
-    {
-      id: "1",
-      url: "https://images.unsplash.com/photo-1738430275589-2cd3d0d0d57a?q=80&w=861&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      latitude: 35.6895,
-      longitude: 139.6917,
-      user: { id: "u1", name: "Alice" },
-      favorite: 42,
-    },
-    {
-      id: "2",
-      url: "https://images.unsplash.com/photo-1734102505163-5050877fbf47?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      latitude: 37.7749,
-      longitude: -122.4194,
-      user: { id: "u2", name: "Bob" },
-      favorite: 76,
-    },
-    {
-      id: "1",
-      url: "https://images.unsplash.com/photo-1738430275589-2cd3d0d0d57a?q=80&w=861&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      latitude: 35.6895,
-      longitude: 139.6917,
-      user: { id: "u1", name: "Alice" },
-      favorite: 42,
-    },
-    {
-      id: "2",
-      url: "https://images.unsplash.com/photo-1734102505163-5050877fbf47?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      latitude: 37.7749,
-      longitude: -122.4194,
-      user: { id: "u2", name: "Bob" },
-      favorite: 76,
-    },
-    {
-      id: "1",
-      url: "https://images.unsplash.com/photo-1738430275589-2cd3d0d0d57a?q=80&w=861&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      latitude: 35.6895,
-      longitude: 139.6917,
-      user: { id: "u1", name: "Alice" },
-      favorite: 42,
-    },
-    {
-      id: "2",
-      url: "https://images.unsplash.com/photo-1734102505163-5050877fbf47?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      latitude: 37.7749,
-      longitude: -122.4194,
-      user: { id: "u2", name: "Bob" },
-      favorite: 76,
-    },
-    // 追加の画像...
-  ];
+import {ImageOutput} from '@/schema/outputTypeSchema/ImageOutputSchema';
+import Image from "next/image";
+
+
   
   export default function Gallery() {
-    const [selectedImage, setSelectedImage] = useState<Image | null>(null);
+    const [selectedImage, setSelectedImage] = useState<ImageOutput | null>(null);
+    const [images, setImages] = useState<ImageOutput[]>([]);
+
+    useEffect(() => {
+
+      const fetchImage = async () => {
+        try{
+          fetch("/api/image/getImages",{
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              num: 10,
+            }),
+          })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+            setImages(data);
+          });
+        }catch(error){
+          console.log("Failed to fecth images", error);
+        }
+      }
+
+      fetchImage();
+
+    }, []);
+
   
     return (
       <div className="p-4">
-        {/* ギャラリー */}
         <div className="grid grid-cols-3 gap-2">
-          {images.map((img) => (
+          {images.map((image: ImageOutput) => (
             <div
-              key={img.id}
+              key={image.id}
               className="relative cursor-pointer"
-              onClick={() => setSelectedImage(img)}
+              onClick={() => setSelectedImage(image)}
             >
-              <img
-                src={img.url}
+              <Image
+                src={image.generatedUrl}
                 alt="Gallery"
                 className="w-full h-auto aspect-square object-cover rounded-md"
+                width={300}
+                height={300}
               />
-              {/* ホバー時のいいね表示 */}
+              
               <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                 <div className="flex items-center text-white text-lg font-semibold">
                   <FavoriteIcon className="w-6 h-6 mr-2" />
-                  {img.favorite}
+                  {image.favorite}
                 </div>
               </div>
             </div>
@@ -145,13 +85,13 @@ const images: Image[] = [
                 onClick={(e) => e.stopPropagation()}
               >
                 <img
-                  src={selectedImage.url}
+                  src={selectedImage.generatedUrl}
                   alt="Detail"
                   className="w-full h-auto rounded-md"
                 />
                 <div className="mt-3">
                   <p className="text-gray-700">📍 {selectedImage.latitude}, {selectedImage.longitude}</p>
-                  <p className="text-gray-700">👤 {selectedImage.user.name}</p>
+                  <p className="text-gray-700">👤 {selectedImage.userId}</p>
                   <p className="text-gray-700">❤️ {selectedImage.favorite} Likes</p>
                 </div>
               </motion.div>

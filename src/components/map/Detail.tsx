@@ -5,24 +5,25 @@ import Image from 'next/image';
 
 import FLike from '@mui/icons-material/FavoriteRounded';
 import FShare from '@mui/icons-material/SendRounded';
+import { ImageOutput } from '@/schema/outputTypeSchema/ImageOutputSchema';
 
-interface DetailProps {
-    map: string;
-    title: string;
-    address: string;
-    date: string;
-    author: string;
-    comment: string;
-    // likes: number;
-    // replies:
-}
+// interface DetailProps {
+//     map: string;
+//     title: string;
+//     address: string;
+//     date: string;
+//     author: string;
+//     comment: string;
+//     // likes: number;
+//     // replies:
+// }
 
-const Detail: React.FC<DetailProps> = ({ map, title, address, date, author, comment }) => {
+const Detail = ({image}: {image: ImageOutput}) => {
     return (
         <>
             <div className="w-full md:flex px-4">
                 <div className="md:w-2/3 px-4 py-4">
-                    <Image src={map} alt="Map" layout="responsive" width={700} height={475} />
+                    <Image src={image.generatedUrl} alt="Map" layout="responsive" width={700} height={475} />
                     <div className="flex justify-end space-x-4 mt-4">
                         <button
                             className="px-6 py-2 rounded-full shadow-lg transform transition-transform hover:scale-105 flex items-center bg-blue-500 text-white"
@@ -41,23 +42,23 @@ const Detail: React.FC<DetailProps> = ({ map, title, address, date, author, comm
                     </div>
                 </div>
                 <div className="md:w-1/3 px-4 py-4">
-                    <h2 className="text-xl font-bold">{title}</h2>
+                    <h2 className="text-xl font-bold">{image.description}</h2>
                     <ul className="mt-2 list-none list-inside flex">
                         <li className="flex justify-between w-full">
                             <a
                                 href="https://example.com"
                                 className="max-w-[70%] text-blue-500 underline overflow-hidden whitespace-nowrap text-ellipsis"
                             >
-                                {address}
+                                {`${image.latitude}, ${image.longitude}`.slice(0, 30)}
                             </a>
-                            <span className="ml-2">{date}</span>
+                            <span className="ml-2">{image.created_at.toString()}</span>
                         </li>
                     </ul>
                     <div className="mt-4">
                         <ul className="mt-2 list-none list-inside">
                             <li className="mt-2">
-                                <p className="font-bold">{author}</p>
-                                <p className="w-full text-sm break-words ml-4">{comment}</p>
+                                <p className="font-bold">{image.userId}</p>
+                                <p className="w-full text-sm break-words ml-4">{image.description}</p>
                             </li>
                             {/* <ul className="ml-4 list-none list-inside mt-2">
                                 <li id="more-replies" className="hidden mt-2">

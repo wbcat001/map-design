@@ -1,23 +1,40 @@
 'use client';
 
 import { useState } from 'react';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 export default function AuthPage() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(email, password);
+    console.log('Email:', email);
+    console.log('Password:', password);
 
-    const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-    })
+    try{
+        await signIn('credentials', {
+            redirect: false,
+            email: email,
+            password,
+          })
+            .then((res) => {
+              if (res?.error) {
+                alert(res.error)
+              }
+              router.push('/')
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+        
+    } catch (error) {
+        console.error("An unexpected error happened:", error);
+        setError("An unexpected error happened");
+    }
 
-    console.log("login response", res.body);
   };
 
   return (

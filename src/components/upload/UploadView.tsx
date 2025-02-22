@@ -10,6 +10,7 @@ const UploadPage = () => {
   const router = useRouter();
   // error as locationError
   const {location, error: locationError} = useGeoLocation();
+  const [title, setTitle] = useState<string>("");
 
   // ファイルが選択された時の処理
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,10 +82,16 @@ const UploadPage = () => {
     try {
 
         //型のチェックをしたあとpostして, optimistic update( mainへ遷移する)
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // 模擬的に2秒待つ
-      const res = await fetch("/api/upload", {
+      // await new Promise((resolve) => setTimeout(resolve, 2000)); // 模擬的に2秒待つ
+      const formData = new FormData();
+      formData.append('file', files[0]);
+      formData.append("title", title);
+      formData.append("latitude", location.latitude.toString());
+      formData.append("longitude", location.longitude.toString());
+      
+      const res = await fetch("/api/map/postMapImage", {
         method: "POST",
-        body: new FormData(), // add location, title, session
+        body: formData, // add location, title, session
       })
       router.push('/');
       // 
@@ -100,7 +107,7 @@ const UploadPage = () => {
   };
 
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-violet-950">
+    <div className="w-full h-screen flex items-center justify-center bg-gray-950">
         <div className="max-w-md mx-auto mt-8">
         <div
             className="border-2 border-dashed border-gray-300 rounded-lg p-6"
@@ -115,13 +122,13 @@ const UploadPage = () => {
                 <p className="text-xl">画像ファイルをドラッグ＆ドロップ、またはクリックして選択</p>
                 ) : (
                     <div className="space-y-4">
-                <p className="text-xl">選択された画像:</p>
+                {/* <p className="text-xl">選択された画像:</p> */}
                 <div className="flex justify-center">
                     {preview && (
                         <img
                         src={preview}
                         alt="Preview"
-                        className="w-32 h-32 object-cover rounded-md"
+                        className="w-full h-full object-cover rounded-md"
                         />
                     )}
                 </div>
@@ -147,6 +154,8 @@ const UploadPage = () => {
             <input
             type="text"
             id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             className="w-full bg-gray-900 text-gray-100 border border-violet-700 rounded p-2 focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder-gray-400"
             />
         </div>
