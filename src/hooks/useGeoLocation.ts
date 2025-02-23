@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect} from 'react';
 
 type GeoLocationPosition = {
@@ -11,7 +12,7 @@ export const useGeoLocation = (interval: number = 5000) => {
         latitude: 35.6895,
         longitude: 139.6917
     }
-    const [location, setLocation] = useState< GeoLocationPosition>(defaultLocation);
+    const [location, setLocation] = useState<GeoLocationPosition>(defaultLocation);
 
     const [error, setError] = useState<string | null>(null);
 
@@ -43,3 +44,7 @@ export const useGeoLocation = (interval: number = 5000) => {
 
 
 }
+
+
+
+
