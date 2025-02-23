@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useGeoLocation } from '@/hooks/useGeoLocation';
 import SimpleMap from './SimpleMap';
+
+
 const UploadPage = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -98,7 +100,7 @@ const UploadPage = () => {
       
       setFiles([]);
       setPreview(null);
-      alert('ファイルアップロード成功');
+      // alert('ファイルアップロード成功');
     } catch (err) {
       setError('アップロード中にエラーが発生しました');
     } finally {

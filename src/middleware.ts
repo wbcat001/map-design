@@ -15,7 +15,7 @@ export default withAuth({
 })
 
 export const config = {
-  // ルートとregister・api・loginはリダイレクト対象から外す
+  
   // matcher: ['/((?!register|api|login|).*)'],
 
   // register・api・loginはリダイレクト対象から外す

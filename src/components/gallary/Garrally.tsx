@@ -22,7 +22,7 @@ import Image from "next/image";
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              num: 10,
+              num: 30,
             }),
           })
           .then((res) => res.json())

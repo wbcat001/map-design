@@ -21,6 +21,7 @@ import {ImageOutput} from '@/schema/outputTypeSchema/ImageOutputSchema';
 import { createRoot } from "react-dom/client";
 
 const MapCompoent = ({setImages}: { setImages: React.Dispatch<React.SetStateAction<ImageOutput[]>> }) => {
+  
     const fetchImage = async () => {
       try{
         const latlangBounds = map.getBounds();
@@ -65,6 +66,10 @@ const MapCompoent = ({setImages}: { setImages: React.Dispatch<React.SetStateActi
         
   
       },
+      loading: () => {
+        console.log("load");
+        fetchImage();
+      },
       dragend: () => {
         console.log("dragend");
         console.log(map.getCenter());
@@ -77,6 +82,10 @@ const MapCompoent = ({setImages}: { setImages: React.Dispatch<React.SetStateActi
       }
       
     })
+
+    useEffect(() => {
+      fetchImage();
+    }, []);
     return null;
   }
 
@@ -85,6 +94,7 @@ const MapCompoent = ({setImages}: { setImages: React.Dispatch<React.SetStateActi
     setShow: React.Dispatch<React.SetStateAction<boolean>>;
     setSelectedImage: React.Dispatch<React.SetStateAction<ImageOutput | null>>;
   };
+  
   const ImageMarker2: React.FC<ImageMarkerProps> = ({ image, setShow, setSelectedImage }) => {
     const handleClicked = () => {
       setShow(true);
@@ -93,7 +103,7 @@ const MapCompoent = ({setImages}: { setImages: React.Dispatch<React.SetStateActi
     
     const customIcon = useMemo(() => {
       const div = document.createElement("div");
-      div.className = "relative w-[50px] h-[50px] rounded-full overflow-hidden shadow-lg border border-violet-950";
+      div.className = "relative w-[50px] h-[50px] rounded-full overflow-hidden shadow-lg border-1 border-violet-600 hover:border-violet-800 hover:border-4 hover:scale-105 transition-transform active:scale-125";
   
       const root = createRoot(div);
       root.render(
@@ -111,6 +121,9 @@ const MapCompoent = ({setImages}: { setImages: React.Dispatch<React.SetStateActi
         html: div,
         // iconSize: [100, 30],
         iconAnchor: [0, 0],
+        iconSize: [0, 0],
+        // popupAnchor: [0, -50],
+        
       });
     }, [image.generatedUrl]);
   
@@ -122,21 +135,7 @@ const MapCompoent = ({setImages}: { setImages: React.Dispatch<React.SetStateActi
     iconAnchor: [16, 32], // アイコンの基準点
     popupAnchor: [0, -32], // ポップアップの基準点
   });
-  const ImageMarker = ({ image }: { image: ImageOutput }) => {
-    return (
-      <Marker key={`${image.latitude}-${image.longitude}`} position={[image.latitude, image.longitude]} icon={CustomIcon(image.generatedUrl)}>
-        {/* <div className="relative w-[100px] h-[100px] rounded-lg overflow-hidden shadow-lg border border-white">
-          <Image
-            src={image.generatedUrl}
-            alt={image.description ?? "Map Image"}
-            fill
-            className="object-cover relative"
-            layout="fill"
-          />
-        </div> */}
-      </Marker>
-    );
-  };
+
 
 
 const GeneralMap = () => {
@@ -207,7 +206,7 @@ const GeneralMap = () => {
                 </Popup>  */}
 
                   {images.map((image: ImageOutput) => (
-                    <ImageMarker2 image={image} setShow={setShow} setSelectedImage={setSelectedImage}/>
+                    <ImageMarker2 key={image.id} image={image} setShow={setShow} setSelectedImage={setSelectedImage}/>
                   ))}
 
 
