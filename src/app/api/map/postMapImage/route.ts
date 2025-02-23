@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
         console.log("longitude", longitude);
         console.log("title", title);
 
-        const imageFile = formData.get("file") as File;
+        const imageFile = formData.get("file");
         if (!imageFile || typeof imageFile === "string") {
             throw new Error("image file not found");
         }
