@@ -6,7 +6,7 @@ import Image from 'next/image';
 import FLike from '@mui/icons-material/FavoriteRounded';
 import FShare from '@mui/icons-material/SendRounded';
 import { ImageOutput } from '@/schema/outputTypeSchema/ImageOutputSchema';
-import { LikeIcon } from '@/components/Icon/LikeIcon';
+// import { LikeIcon } from '@/components/Icon/LikeIcon';
 
 // interface DetailProps {
 //     map: string;
