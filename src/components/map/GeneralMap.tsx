@@ -2,20 +2,16 @@
 import { MapContainer, TileLayer, Popup, Marker } from 'react-leaflet';
 import { Icon, LatLng, LatLngExpression, LatLngTuple } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-
 import { useEffect, useMemo, useState } from 'react';
-
 import Image  from 'next/image';
-
 import { CommonModal } from '../modal/CommonModal';
 import L from "leaflet";
 
-// import { useGeoLocation} from "@/hooks/useGeoLocation";
 import {useMapEvents} from 'react-leaflet/hooks';
-//mapに関するcssを管理
+import { useGeoLocation } from '@/hooks/useGeoLocation';
 // import './general-map.css';
-
 import Detail from './Detail';
+import { LocationIcon } from '@/components/Icon/LocationIcon';
 
 import {ImageOutput} from '@/schema/outputTypeSchema/ImageOutputSchema';
 import { createRoot } from "react-dom/client";
@@ -112,7 +108,7 @@ const MapCompoent = ({setImages}: { setImages: React.Dispatch<React.SetStateActi
           alt={image.description ?? "Image"}
           width={30}
           height={30}
-          className="object-cover w-full h-full"
+          className="object-cover w-full h-full z-50"
           onClick={handleClicked}
         />
       );
@@ -129,13 +125,30 @@ const MapCompoent = ({setImages}: { setImages: React.Dispatch<React.SetStateActi
   
     return <Marker position={[image.latitude, image.longitude]} icon={customIcon} />;
   };
-  const CustomIcon = (url: string)  => new Icon({
-    iconUrl: url, 
-    iconSize: [48, 48], // アイコンのサイズ
-    iconAnchor: [16, 32], // アイコンの基準点
-    popupAnchor: [0, -32], // ポップアップの基準点
-  });
 
+  const UserMarker = ({ position }: { position: LatLngTuple }) => {
+    const customIcon = useMemo(() => {
+      const div = document.createElement("div");
+      div.className = "relative w-[50px] h-[50px] ";
+  
+      const root = createRoot(div);
+      root.render(
+        <LocationIcon className="w-12 h-12 z-100 shadow-sm"></LocationIcon>
+      );
+  
+      return L.divIcon({
+        html: div,
+  
+        iconAnchor: [12, 24],
+        iconSize: [0, 0],
+   
+        
+      });
+    }, []);
+  
+    return <Marker position={position} icon={customIcon} zIndexOffset={100}/>;
+
+  }
 
 
 const GeneralMap = () => {
@@ -145,43 +158,31 @@ const GeneralMap = () => {
     const [zoom, setZoom] = useState<number>(13);
     // const {location, error} = useGeoLocation();
     const [position, setPosition] = useState<LatLngTuple>([35.681236, 139.767125]);
-    const handleReset = () =>{
-        setPosition([35.681236, 139.767125]);
-    }
+
+   
     const [images, setImages] = useState<ImageOutput[]>([]);
 
-    
+    const {location, error} = useGeoLocation();
 
-    // useEffect(() => {
-    //     if (navigator.geolocation) {
-    //         console.log("location found");
-    //       navigator.geolocation.getCurrentPosition((pos) => {
-    //         setPosition([pos.coords.latitude, pos.coords.longitude]);
-    //       });
-    //     }else{
-    //         console.log("location not found");
-    //     }
-    // }, []);
-    
-    // useEffect(() =>{
-    //     const addPositionX = (x: number) => {
-    //       setPosition((prev) => {
-    //         if (prev) {
-    //           return [prev[0] + x, prev[1]];
-    //         }
-    //         return prev;
-    //       })
-    //     }
-    //     const interval = setInterval(() => {
-    //       addPositionX(0.001);
-    //     }, 5000);
-    //     return ()=> clearInterval(interval);
-    //   },[]);
+    const handleReset = () =>{
+      setPosition([35.681236, 139.767125]);
+  }
+
+    useEffect(() => {
+        if (navigator.geolocation) {
+            console.log("location found");
+          navigator.geolocation.getCurrentPosition((pos) => {
+            setPosition([pos.coords.latitude, pos.coords.longitude]);
+          });
+        }else{
+            console.log("location not found");
+        }
+    }, []);
 
     return (<>
         <div className="w-full h-screen z-0">
         {/* <button onClick={handleReset} className="absolute top-30 left-30 bg-white p-2 rounded-full shadow-md">Reset</button> */}
-            <MapContainer center={position} zoom={zoom} className="w-full h-full z-0">
+            <MapContainer key={`${location.latitude}`} center={[location.latitude, location.longitude]} zoom={zoom} className="w-full h-full z-0">
                 
                 <MapCompoent setImages={setImages}/>
                 <TileLayer
@@ -204,11 +205,12 @@ const GeneralMap = () => {
                     onClick={() => setShow(!show)}
                     />
                 </Popup>  */}
-
-                  {images.map((image: ImageOutput) => (
-                    <ImageMarker2 key={image.id} image={image} setShow={setShow} setSelectedImage={setSelectedImage}/>
-                  ))}
-
+                
+                {images.map((image: ImageOutput) => (
+                  <ImageMarker2 key={image.id} image={image} setShow={setShow} setSelectedImage={setSelectedImage}/>
+                ))}
+                  
+                  <UserMarker position={[location.latitude, location.longitude]} />
 
                 <CommonModal
                     isOpen={show}

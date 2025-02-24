@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useGeoLocation } from '@/hooks/useGeoLocation';
 import SimpleMap from './SimpleMap';
+import Image from 'next/image';
 
+import {UploadIcon} from '@/components/Icon/UploadIcon';
 
 const UploadPage = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -26,7 +28,7 @@ const UploadPage = () => {
       );
 
       if (imageFiles.length === 0) {
-        setError('画像ファイルを選択してください');
+        setError('please choose photo');
         setFiles([]);
         setPreview(null);
       } else {
@@ -109,10 +111,12 @@ const UploadPage = () => {
   };
 
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-gray-950">
-        <div className="max-w-md mx-auto mt-8">
+    <div>
+
+    <div className="w-full h-lvh flex items-center justify-center bg-gray-950">
+        <div className="w-3/4 mt-8 mx-8">
         <div
-            className="border-2 border-dashed border-gray-300 rounded-lg p-6"
+            className="border border-dashed border-gray-400 rounded-lg p-4"
             onDragOver={handleDragOver}
             onDrop={handleDrop}
             >
@@ -121,17 +125,24 @@ const UploadPage = () => {
             className="block text-center text-gray-600 cursor-pointer"
             >
             {files.length === 0 ? (
-                <p className="text-xl">画像ファイルをドラッグ＆ドロップ、またはクリックして選択</p>
+              // <UploadIcon className="w-full h-full"/>
+              <div className="w-full h-full mx-auto">
+                    
+                  
+                  <UploadIcon className="w-24 h-24 mx-auto"/>
+                </div>
                 ) : (
-                    <div className="space-y-4">
+                  <div className="space-y-4">
                 {/* <p className="text-xl">選択された画像:</p> */}
                 <div className="flex justify-center">
                     {preview && (
-                        <img
-                        src={preview}
-                        alt="Preview"
-                        className="w-full h-full object-cover rounded-md"
-                        />
+                      <Image
+                      src={preview}
+                      alt="Preview"
+                      className="w-full h-full object-cover rounded-md max-h-3/4"
+                      width={200}
+                      height={200}
+                      />
                     )}
                 </div>
                 </div>
@@ -167,18 +178,22 @@ const UploadPage = () => {
             <SimpleMap location={location} error={locationError} />
         </div>
 
-        <div className="mt-4 flex justify-between items-center">
+        <div className="mt-4 flex justify-between items-center mb-20">
             <button
             onClick={handleUpload}
             disabled={uploading}
             className={`${
-                uploading ? 'bg-violet-400 cursor-not-allowed' : 'w-full bg-violet-700 rounded hover:bg-violet-600 active:bg-violet-500 active:scale-105'
-                } text-white px-6 py-2 rounded-md`}
-                >
+              uploading ? 'bg-violet-400 cursor-not-allowed' : ' bg-violet-700 rounded hover:bg-violet-600 active:bg-violet-500 active:scale-105'
+            } w-full text-white px-6 py-2 rounded-md`}
+            >
             {uploading ? 'Uploading...' : 'Upload'}
             </button>
         </div>
         </div>
+
+        
+    </div>
+      
     </div>
   );
 };

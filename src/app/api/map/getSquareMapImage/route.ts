@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
             const { favorites, ...rest} = image;
             return {
                 ...rest,
-                favoriteNum: image.favorites.length,
+                favorite: image.favorites.length,
             };
         });
         console.log(outputImages);
